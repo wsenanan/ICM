@@ -9,28 +9,75 @@ output:
 ```{r setup, include=FALSE}
 library(flexdashboard)
 ```
+Page 1
+================================
 
+```{r}
+library(readxl)
+library(leaflet)
+
+coord <-read_xlsx("../data/coordinates.xlsx",
+                  sheet = "Sheet1")
+```
 Column {data-width=650}
 -----------------------------------------------------------------------
 
-### Chart A
+### Chon Buri
 
 ```{r}
+
+leaflet() %>%
+  addTiles() %>%
+  addMarkers(data=coord, 
+             lng = ~longitude,
+             lat = ~latitude,
+             popup = ~station)
 
 ```
 
 Column {data-width=350}
 -----------------------------------------------------------------------
 
-### Chart B
+### Bangkok
 
-```{r}
+```{r table01, echo=FALSE}
+library(tidyverse)
+WQ <- read_xlsx("../data/WQ.xlsx",
+                sheet = "clone (2)")
+
+table01<-WQ %>%
+  group_by(province,monsoon) %>%
+  summarise (mean(DO),
+             sd(DO))
+
+knitr::kable(table01,
+             digits = 2,
+             col.names = c("Province", "Monsoon", "DO", "SD"),
+             caption = ("Figure 1. Dissolved oxygen in each province"))
 
 ```
 
-### Chart C
+### Samut Prakarn
 
-```{r}
+```{r Fig01, echo=FALSE, fig.cap = "ภาพที่ 1 ปริมาณออกซิเจนที่ละลายนำ"}
+
+table01%>%
+   ggplot(aes(x= province,
+              y= `mean(DO)`))+
+   geom_col(aes(fill=monsoon),
+            position = position_dodge(0.8),
+            width=0.7) + 
+   geom_errorbar(
+      aes(ymin =`mean(DO)`-`sd(DO)`,
+                 ymax = `mean(DO)`+`sd(DO)` ,
+                 group = monsoon),
+width = 0.3,
+position = position_dodge(0.8))+
+   labs(x="Province|จังหวัด",
+        y= "Dissolved Oxygen")
+
 
 ```
 
+Page 2
+===================================
