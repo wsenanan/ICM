@@ -22,7 +22,7 @@ coord <-read_xlsx("../data/coordinates.xlsx",
 Column {data-width=650}
 -----------------------------------------------------------------------
 
-### Chon Buri
+### Dissolved Oxygen
 
 ```{r}
 
